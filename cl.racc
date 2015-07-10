@@ -1,44 +1,119 @@
-#  racc  cl.racc
+# racc -v -g cl.racc
 
 class ClParser
+
+options no_result_var
+
+prechigh
+  left '||'
+  nonassoc '='
+preclow
+
 rule
 
   program   : stmt_list
                 {
-#                  result = RootNode.new(val[0])
+                  RootNode.new(val[0])
                 }
 
   stmt_list :
                 {
-#                  result = []
+                  result = []
                 }
             | stmt_list stmt EOL
                 {
-#                  result.push val[1]
+                  val[0].push val[1]
                 }
             | stmt_list EOL
 
-  stmt      : PGM
-            | COMMAND parms
-            | ENDPGM
+  stmt      : command
+            | label command
+                {
+                  val[1]
+                }
+            | if_stmt
 
-  parms     : parms parm
-            | parm
+  command   : IDENT parms
+                {
+                  CommandNode.new(@file_name, val[0][0], val[0][1], val[1][1])
+                }
+            | IDENT args
+                {
+                  CommandNode.new(@file_name, val[0][0], val[0][1], val[1])
+                }
+            | IDENT
+                {
+                  CommandNode.new(@file_name, val[0][0], val[0][1], nil)
+                }
 
-  parm      : PARM '(' primary ')'
-            | PARM '(' primary '(' primary primary ')' ')'
-            | PARM '(' COMMAND PGM '(' IDENT ')' ')'
+  label     : IDENT ':'
 
+  if_stmt   : IF COND '(' expr ')' THEN '(' command ')'
+                {
+                  IfNode.new(@file_name, val[0][0], val[3], val[7])
+                }
+
+  parms     : parm
+                {
+                  [val[0]]
+                }
+            | parms parm
+                {
+                  val[0].push(val[1])
+                }
+
+  parm      : IDENT '(' args ')'
+                {
+                  ParmNode.new(@file_name, val[0][0], val[0][1], val[2])
+                }
+            | IDENT '(' primary '(' NUMBER NUMBER ')' ')' # 例.DTAARA(WRKLIB/AREA1 (1 7))
+            | CMD '(' IDENT IDENT  '(' IDENT ')' ')'      # 例.CMD(CALL PGM(PGM1A))
+
+  args      : primary
+                {
+                  [val[0]]
+                }
+            | args primary
+                {
+                  val[0].push(val[1])
+                }
+ 
   primary   : IDENT
                 {
-#                  result = VarRefNode.new(@file_name, val[0][0], val[0][1])
+                  VarRefNode.new(@file_name, val[0][0], val[0][1])
                 }
             | NUMBER
                 {
-#                  result = LiteralNode.new(@file_name, val[0][0], val[0][1])
+                  LiteralNode.new(@file_name, val[0][0], val[0][1])
+                }
+            | STRING
+                {
+                  StringNode.new(@file_name, val[0][0], val[0][1])
                 }
             | RESERVED
+                {
+                  ReservedNode.new(@file_name, val[0][0], val[0][1])
+                }
             | IDENT '/' IDENT
+                {
+                  LiteralNode.new(@file_name, val[0][0], val[0][1].to_s + '/' + val[0][2].to_s)
+                }
+            | function
+            | expr
+
+  expr      : primary '=' primary
+                {
+                  LiteralNode.new(@file_name, val[0].lineno, '=')
+                }
+            | primary '||' primary
+                {
+                  LiteralNode.new(@file_name, val[0].lineno, '||')
+                }
+
+  function  : SST '(' args ')'
+                {
+                  FuncallNode.new(@file_name, val[0][0], '[]', [val[1], val[3]])
+                }
 
 end
 

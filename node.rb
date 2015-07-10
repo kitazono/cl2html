@@ -1,186 +1,133 @@
-# module Intp
+class IntpError < StandardError; end
 
-  class IntpError < StandardError; end
-  class IntpArgumentError < IntpError; end
+class Node
 
-  # class Core
+  attr_reader :file_name
+  attr_reader :lineno
 
-  #   def initialize
-  #     @function_table = {}
-  #     @obj = Object.new
-  #     @stack = []
-  #     @stack.push(Frame.new("(toplevel)"))
-  #   end
-
-  #   def frame
-  #     @stack[-1]
-  #   end
-
-  #   def call_function_or(function_name, args)
-  #     call_intp_function_or(function_name, args) do
-  #       call_ruby_toplevel_or(function_name, args) do
-  #         yield
-  #       end
-  #     end
-  #   end
-
-  #   def call_intp_function_or(function_name, args)
-  #     if function = @function_table[function_name]
-  #       frame = Frame.new(function_name)
-  #       @stack.push(frame)
-  #       function.call(self, frame, args)
-  #       @stack.pop
-  #     else
-  #       yield
-  #     end
-  #   end
-
-  #   def call_ruby_toplevel_or(function_name, args)
-  #     if @obj.respond_to?(function_name, true)
-  #       @obj.send(function_name, *args)
-  #     else
-  #       yield
-  #     end
-  #   end
-
-  # end
-
-  # class Frame
-
-  #   attr :function_name
-
-  #   def initialize(function_name)
-  #     @function_name = function_name
-  #     @local_vars = {}
-  #   end
-
-  #   def local_var?(var_name)
-  #     @local_vars.key?(var_name)
-  #   end
-
-  #   def [](var_name)
-  #     @local_vars[var_name]
-  #   end
-
-  #   def []=(var_name, val)
-  #     @local_vars[var_name] = val
-  #   end
-
-  # end
-
-  class Node
-
-    attr_reader :file_name
-    attr_reader :lineno
-
-    @@indent = 0
-    @@subroutine_table = {}
-
-    def initialize(file_name, lineno)
-      @file_name = file_name
-      @lineno = lineno
-    end
-
-    def exec_list(intp, nodes)
-      v = nil
-      nodes.each {|node| v = node.evaluate(intp)}
-      v
-    end
-
-    def intp_error!(msg)
-      raise IntpError, "in #{file_name}:#{lineno}: #{msg}"
-    end
-
-    def inspect
-      "#{self.class.name}/#{lineno}"
-    end
-
+  def initialize(file_name, lineno)
+    @file_name = file_name
+    @lineno = lineno
   end
 
-  class RootNode < Node
-
-    def initialize(tree)
-      super(nil, nil)
-      @tree = tree
-    end
-
-    def evaluate
-      exec_list(Core.new, @tree)
-    end
-
-
+  def exec_list(nodes)
+    v = nil
+    nodes.each {|node| v = node.print}
+    v
   end
 
-  # class AssignNode < Node
+  def intp_error!(msg)
+    raise IntpError, "in #{file_name}:#{lineno}: #{msg}"
+  end
 
-  #   def initialize(file_name, lineno, var_name, val)
-  #     super(file_name, lineno)
-  #     @var_name = var_name
-  #     @val = val
-  #   end
+  def inspect
+    "#{self.class.name}/#{lineno}"
+  end
 
-  #   def evaluate(intp)
-  #     intp.frame[@var_name] = @val.evaluate(intp)
-  #     # debug
-  #     p @val.evaluate(intp)
-  #   end
+end
 
-  #   def to_s
-  #     str = ""
-  #     str << "#{@var_name} = "
-  #     str << @val.to_s
-  #   end
+class RootNode < Node
 
-  #   def draw(flowchart)
-  #     flowchart.add_edge(self.to_s)
-  #   end
+  def initialize(tree)
+    super(nil, nil)
+    @tree = tree
+  end
 
-  # end
+  def print
+    exec_list(@tree)
+  end
+end
 
-  # class VarRefNode < Node
+class CommandNode < Node
 
-  #   def initialize(file_name, lineno, var_name)
-  #     super(file_name, lineno)
-  #     @var_name = var_name
-  #   end
+  attr_reader :command
 
-  #   def evaluate(intp)
-  #     if intp.frame.local_var?(@var_name)
-  #       intp.frame[@var_name]
-  #     else
-  #       intp.call_function_or(@var_name, []) do
-  #         intp_error!("unknown method or local variable #{@var_name.id2name}")
-  #       end
-  #     end
-  #   end
+  def initialize(file_name, lineno, command, parms)
+    super(file_name, lineno)
+    @command = command
+    @parms = parms
+  end
 
-  #   def to_s
-  #     "#{@var_name}"
-  #   end
+  def print
+    p @command if @command == :CALL 
+  end
+end
 
-  # end
+class FuncallNode < Node
 
-  # class CallNode < Node
+  def initialize(file_name, lineno, function_name, args)
+    super(file_name, lineno)
+    @function_name = function_name
+    @args = args
+  end
 
-  #   def initialize(file_name, lineno, primary)
-  #     super(file_name, lineno)
-  #     @primary = primary
-  #   end
+  def print
+    p @function_name
+    p @args
+  end
+end
 
-  #   def evaluate(intp)
-  #     InterPreter.new(@primary.evaluate(intp))
-  #   end
 
-  #   def to_s
-  #     str = ""
-  #     str << "call "
-  #     str << @primary.to_s
-  #   end
+class IfNode < Node
 
-  #   def draw(flowchart)
-  #     flowchart.add_edge(self.to_s)
-  #   end
+  def initialize(file_name, lineno, condition, true_stmt)
+    super(file_name, lineno)
+    @condition = condition
+    @true_stmt = true_stmt
+    # @false_stmt = false_stmt
+  end
 
-  # end
+  def print
+    if @true_stmt.command == :CALL
+      printf 'IF'
+      @condition.print
+      printf 'THEN'
+      @true_stmt.print
+    end
+  end
+end
 
-# end # module Intp
+class VarRefNode < Node
+
+  def initialize(file_name, lineno, var_name)
+    super(file_name, lineno)
+    @var_name = var_name
+  end
+end
+
+class ParmNode < Node
+
+  def initialize(file_name, lineno, parm_name, val)
+    super(file_name, lineno)
+    @parm_name = parm_name
+    @val = val
+  end
+end
+
+class LiteralNode < Node
+
+  def initialize(file_name, lineno, val)
+    super(file_name, lineno)
+    @val = val
+  end
+
+  def print
+    printf @val
+  end
+end
+
+class StringNode < Node
+
+  def initialize(file_name, lineno, str)
+    super(file_name, lineno)
+    @val = str
+  end
+end
+
+class ReservedNode < Node
+
+  def initialize(file_name, lineno, resereved_word)
+    super(file_name, lineno)
+    @resereved_word = resereved_word
+  end
+end

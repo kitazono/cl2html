@@ -1,12 +1,25 @@
-#  rex  cl.rex --stub
-#  ruby cl.rex.rb  sample.txt
+# rex  cl.rex --stub
+# ruby cl.rex.rb  sample.txt
 
 class ClLexer
 
+inner
+
+  RESERVED = {
+    'IF'     => :IF,
+    'THEN'   => :THEN,
+    'CMD'    => :CMD,
+    'COND'   => :COND,
+    '%SST'   => :SST
+  }
+
 rule
 
+# 継続行
+  \+\s+
+
 # 改行
-  \n            { [:EOL, nil] }
+  \n            { [:EOL, [lineno, nil]] }
 
 # 空白
   \s+?
@@ -15,44 +28,20 @@ rule
   \/\*(.+)\*\/
 
 # 予約語
-  \*CHAR        { [:RESERVED, text] }
-  ENDPGM        { [:ENDPGM, text] } 
-  PGM\s         { [:PGM, text.strip] } 
-
-# 命令
-  CALL          { [:COMMAND, text] } 
-  CHGDTAARA     { [:COMMAND, text] } 
-  CHGVAR        { [:COMMAND, text] } 
-  CLROUTQ       { [:COMMAND, text] } 
-  CRTDTAARA     { [:COMMAND, text] } 
-  DCL           { [:COMMAND, text] }
-  DLTDTAARA     { [:COMMAND, text] }
-  MONMSG        { [:COMMAND, text] } 
-  RGZPFM        { [:COMMAND, text] } 
-  RTVJOBA       { [:COMMAND, text] } 
-  SBMJOB        { [:COMMAND, text] } 
-
-# パラメータ
-  CMD           { [:PARM, text] } 
-  CYMDDATE      { [:PARM, text] }
-  DTAARA        { [:PARM, text] }
-  FILE          { [:PARM, text] } 
-  LEN           { [:PARM, text] }
-  MSGID         { [:PARM, text] } 
-  OUTQ          { [:PARM, text] } 
-  SCDTIME       { [:PARM, text] } 
-  TYPE          { [:PARM, text] } 
-  VALUE         { [:PARM, text] } 
-  VAR           { [:PARM, text] } 
-
-# 識別子
-  &\w+          { [:IDENT, text] }
-  \w+           { [:IDENT, text] }
+  \*CHAR        { [:RESERVED, [lineno, text]] }
 
 # 数値
-  \d+           { [:NUMBER, text.to_i] }
+  \d+           { [:NUMBER, [lineno, text.to_i]] }
 
-# 括弧
-  .             { [text, text] }
+# 識別子
+  [&%]\w+       { [(RESERVED[text] || :IDENT), [lineno, text.intern]] }
+  \w+           { [(RESERVED[text] || :IDENT), [lineno, text.intern]] }
+
+# 文字列
+  \'[^']*\'     { [:STRING, [lineno, text]] }
+
+# 記号
+  \|\|          { [text, [lineno, text]] }
+  .             { [text, [lineno, text]] }
 
 end

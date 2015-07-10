@@ -17,8 +17,8 @@ class InterPreter
     begin
       tree = nil
       File.open(@file_name) {|file| tree = ClParser.new.parse(file, @file_name)}
-      # tree.print
-    rescue Racc::ParseError, Intp::IntpError, Errno::ENOENT
+      tree.print
+    rescue Racc::ParseError, IntpError, Errno::ENOENT
       $stderr.puts "#{$0}: #{$!}"
       exit 1
     end
