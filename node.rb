@@ -49,7 +49,10 @@ class CommandNode < Node
   end
 
   def print
-    p @command if @command == :CALL 
+    if @command == :CALL
+      puts @command
+      @parms.each {|p| p.print }
+    end
   end
 end
 
@@ -93,14 +96,21 @@ class VarRefNode < Node
     super(file_name, lineno)
     @var_name = var_name
   end
+
+  def print
+  end
 end
 
 class ParmNode < Node
 
-  def initialize(file_name, lineno, parm_name, val)
+  def initialize(file_name, lineno, parm_name, args)
     super(file_name, lineno)
     @parm_name = parm_name
-    @val = val
+    @args = args
+  end
+
+  def print
+    @args.each {|v| v.print}
   end
 end
 
@@ -112,7 +122,7 @@ class LiteralNode < Node
   end
 
   def print
-    printf @val
+    puts @val
   end
 end
 

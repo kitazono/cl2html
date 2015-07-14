@@ -35,7 +35,7 @@ rule
 
   command   : IDENT parms
                 {
-                  CommandNode.new(@file_name, val[0][0], val[0][1], val[1][1])
+                  CommandNode.new(@file_name, val[0][0], val[0][1], val[1])
                 }
             | IDENT args
                 {
@@ -80,7 +80,7 @@ rule
  
   primary   : IDENT
                 {
-                  VarRefNode.new(@file_name, val[0][0], val[0][1])
+                  LiteralNode.new(@file_name, val[0][0], val[0][1])
                 }
             | NUMBER
                 {

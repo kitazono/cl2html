@@ -256,7 +256,7 @@ module_eval(<<'.,.,', 'cl.racc', 31)
 
 module_eval(<<'.,.,', 'cl.racc', 37)
   def _reduce_8(val, _values)
-                      CommandNode.new(@file_name, val[0][0], val[0][1], val[1][1])
+                      CommandNode.new(@file_name, val[0][0], val[0][1], val[1])
                 
   end
 .,.,
@@ -325,7 +325,7 @@ module_eval(<<'.,.,', 'cl.racc', 77)
 
 module_eval(<<'.,.,', 'cl.racc', 82)
   def _reduce_20(val, _values)
-                      VarRefNode.new(@file_name, val[0][0], val[0][1])
+                      LiteralNode.new(@file_name, val[0][0], val[0][1])
                 
   end
 .,.,
