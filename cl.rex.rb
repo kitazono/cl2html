@@ -79,10 +79,10 @@ class ClLexer < Racc::Parser
          action { [:NUMBER, [lineno, text.to_i]] }
 
       when (text = @ss.scan(/[&%]\w+/))
-         action { [(RESERVED[text] || :IDENT), [lineno, text.intern]] }
+         action { [(RESERVED[text] || :IDENT), [lineno, text]] }
 
       when (text = @ss.scan(/\w+/))
-         action { [(RESERVED[text] || :IDENT), [lineno, text.intern]] }
+         action { [(RESERVED[text] || :IDENT), [lineno, text]] }
 
       when (text = @ss.scan(/\'[^']*\'/))
          action { [:STRING, [lineno, text]] }

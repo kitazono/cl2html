@@ -34,8 +34,8 @@ rule
   \d+           { [:NUMBER, [lineno, text.to_i]] }
 
 # 識別子
-  [&%]\w+       { [(RESERVED[text] || :IDENT), [lineno, text.intern]] }
-  \w+           { [(RESERVED[text] || :IDENT), [lineno, text.intern]] }
+  [&%]\w+       { [(RESERVED[text] || :IDENT), [lineno, text]] }
+  \w+           { [(RESERVED[text] || :IDENT), [lineno, text]] }
 
 # 文字列
   \'[^']*\'     { [:STRING, [lineno, text]] }

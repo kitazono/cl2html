@@ -49,27 +49,12 @@ class CommandNode < Node
   end
 
   def print
-    if @command == :CALL
-      puts @command
-      @parms.each {|p| p.print }
+    if @command == "CALL"
+      puts "#{@command} #{@parms[0].args[0][1]}"
+      InterPreter.new("-p", "../test_data/" + @parms[0].args[0][1] + ".txt")
     end
   end
 end
-
-class FuncallNode < Node
-
-  def initialize(file_name, lineno, function_name, args)
-    super(file_name, lineno)
-    @function_name = function_name
-    @args = args
-  end
-
-  def print
-    p @function_name
-    p @args
-  end
-end
-
 
 class IfNode < Node
 
@@ -81,63 +66,20 @@ class IfNode < Node
   end
 
   def print
-    if @true_stmt.command == :CALL
-      printf 'IF'
-      @condition.print
-      printf 'THEN'
+    if @true_stmt.command == "CALL"
+      puts "IF #{@condition[1]} THEN"
       @true_stmt.print
     end
   end
 end
 
-class VarRefNode < Node
-
-  def initialize(file_name, lineno, var_name)
-    super(file_name, lineno)
-    @var_name = var_name
-  end
-
-  def print
-  end
-end
-
 class ParmNode < Node
+
+  attr_reader :args
 
   def initialize(file_name, lineno, parm_name, args)
     super(file_name, lineno)
     @parm_name = parm_name
     @args = args
-  end
-
-  def print
-    @args.each {|v| v.print}
-  end
-end
-
-class LiteralNode < Node
-
-  def initialize(file_name, lineno, val)
-    super(file_name, lineno)
-    @val = val
-  end
-
-  def print
-    puts @val
-  end
-end
-
-class StringNode < Node
-
-  def initialize(file_name, lineno, str)
-    super(file_name, lineno)
-    @val = str
-  end
-end
-
-class ReservedNode < Node
-
-  def initialize(file_name, lineno, resereved_word)
-    super(file_name, lineno)
-    @resereved_word = resereved_word
   end
 end

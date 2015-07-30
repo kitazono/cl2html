@@ -78,42 +78,39 @@ rule
                   val[0].push(val[1])
                 }
  
-  primary   : IDENT
-                {
-                  LiteralNode.new(@file_name, val[0][0], val[0][1])
-                }
-            | NUMBER
-                {
-                  LiteralNode.new(@file_name, val[0][0], val[0][1])
-                }
-            | STRING
-                {
-                  StringNode.new(@file_name, val[0][0], val[0][1])
-                }
-            | RESERVED
-                {
-                  ReservedNode.new(@file_name, val[0][0], val[0][1])
-                }
-            | IDENT '/' IDENT
-                {
-                  LiteralNode.new(@file_name, val[0][0], val[0][1].to_s + '/' + val[0][2].to_s)
-                }
-            | function
-            | expr
-
   expr      : primary '=' primary
                 {
-                  LiteralNode.new(@file_name, val[0].lineno, '=')
+                   [val[0][0], val[0][1] + '=' + val[2][1]]  
                 }
             | primary '||' primary
                 {
-                  LiteralNode.new(@file_name, val[0].lineno, '||')
+                   [val[0][0], val[0][1] + val[2][1]]                     
                 }
 
   function  : SST '(' args ')'
+
+  primary   : IDENT
                 {
-                  FuncallNode.new(@file_name, val[0][0], '[]', [val[1], val[3]])
+                   val[0]
                 }
+            | NUMBER
+                {
+                   val[0]
+                }
+            | STRING
+                {
+                   val[0]
+                }
+            | RESERVED
+                {
+                   val[0]
+                }
+            | IDENT '/' IDENT
+                {
+                   val[0]
+                }
+            | function
+            | expr  
 
 end
 
