@@ -51,7 +51,8 @@ class CommandNode < Node
   def print
     if @command == "CALL"
       puts "#{@command} #{@parms[0].args[0][1]}"
-      InterPreter.new("-p", "../test_data/" + @parms[0].args[0][1] + ".txt")
+      @file_name =~ /.*\\(.*)\.txt/
+      InterPreter.new("-p", @file_name.gsub($1, @parms[0].args[0][1]))
     end
   end
 end
