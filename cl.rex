@@ -1,5 +1,5 @@
 # rex  cl.rex --stub
-# ruby cl.rex.rb  sample.txt
+# ruby cl.rex.rb  ../test_data/CL_SAMPLE.txt
 
 class ClLexer
 
@@ -13,7 +13,16 @@ inner
     '%SST'   => :SST
   }
 
+macro
+  REM_IN        \/\*
+  REM_OUT       \*\/
+
 rule
+
+# コメント
+                {REM_IN}        { @state = :REMS; return }
+  :REMS         {REM_OUT}       { @state = nil; return }
+  :REMS         [^{REM_OUT}]    
 
 # 継続行
   \+\s+
@@ -25,7 +34,7 @@ rule
   \s+?
 
 # コメント
-  \/\*(.+)\*\/
+#  \/\*(.+)\*\/
 
 # 予約語
   \*CHAR        { [:RESERVED, [lineno, text]] }

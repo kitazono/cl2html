@@ -6,7 +6,7 @@
 
 require 'racc/parser'
 # rex  cl.rex --stub
-# ruby cl.rex.rb  sample.txt
+# ruby cl.rex.rb  ../test_data/CL_SAMPLE.txt
 
 class ClLexer < Racc::Parser
   require 'strscan'
@@ -60,6 +60,9 @@ class ClLexer < Racc::Parser
     token = case @state
     when nil
       case
+      when (text = @ss.scan(/\/\*/))
+         action { @state = :REMS; return }
+
       when (text = @ss.scan(/\+\s+/))
         ;
 
@@ -67,9 +70,6 @@ class ClLexer < Racc::Parser
          action { [:EOL, [lineno, nil]] }
 
       when (text = @ss.scan(/\s+?/))
-        ;
-
-      when (text = @ss.scan(/\/\*(.+)\*\//))
         ;
 
       when (text = @ss.scan(/\*CHAR/))
@@ -92,6 +92,19 @@ class ClLexer < Racc::Parser
 
       when (text = @ss.scan(/./))
          action { [text, [lineno, text]] }
+
+      else
+        text = @ss.string[@ss.pos .. -1]
+        raise  ScanError, "can not match: '" + text + "'"
+      end  # if
+
+    when :REMS
+      case
+      when (text = @ss.scan(/\*\//))
+         action { @state = nil; return }
+
+      when (text = @ss.scan(/[^\*\/]/))
+        ;
 
       else
         text = @ss.string[@ss.pos .. -1]
