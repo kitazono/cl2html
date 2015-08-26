@@ -13,16 +13,13 @@ inner
     '%SST'   => :SST
   }
 
-macro
-  REM_IN        \/\*
-  REM_OUT       \*\/
-
 rule
 
 # コメント
-                {REM_IN}        { @state = :REMS; return }
-  :REMS         {REM_OUT}       { @state = nil; return }
-  :REMS         [^{REM_OUT}]    
+                \/\*           { @state = :COMMENT; return }
+  :COMMENT      [^\*]+         { return }
+  :COMMENT      \*+[^\*\/\n]+  { return }
+  :COMMENT      \*\/           { @state = nil; return }
 
 # 継続行
   \+\s+

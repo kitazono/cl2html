@@ -61,7 +61,7 @@ class ClLexer < Racc::Parser
     when nil
       case
       when (text = @ss.scan(/\/\*/))
-         action { @state = :REMS; return }
+         action { @state = :COMMENT; return }
 
       when (text = @ss.scan(/\+\s+/))
         ;
@@ -98,13 +98,16 @@ class ClLexer < Racc::Parser
         raise  ScanError, "can not match: '" + text + "'"
       end  # if
 
-    when :REMS
+    when :COMMENT
       case
+      when (text = @ss.scan(/[^\*]+/))
+         action { return }
+
+      when (text = @ss.scan(/\*+[^\*\/\n]+/))
+         action { return }
+
       when (text = @ss.scan(/\*\//))
          action { @state = nil; return }
-
-      when (text = @ss.scan(/[^\*\/]/))
-        ;
 
       else
         text = @ss.string[@ss.pos .. -1]
