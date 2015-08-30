@@ -73,7 +73,25 @@ class ClLexer < Racc::Parser
         ;
 
       when (text = @ss.scan(/\*CHAR/))
-         action { [:RESERVED, [lineno, text]] }
+         action { [:IDENT, [lineno, text]] }
+
+      when (text = @ss.scan(/\*LIBL/))
+         action { [:IDENT, [lineno, text]] }
+
+      when (text = @ss.scan(/\*CHG/))
+         action { [:IDENT, [lineno, text]] }
+
+      when (text = @ss.scan(/\*DEC/))
+         action { [:IDENT, [lineno, text]] }
+
+      when (text = @ss.scan(/\*REPLACE/))
+         action { [:IDENT, [lineno, text]] }
+
+      when (text = @ss.scan(/\*YES/))
+         action { [:IDENT, [lineno, text]] }
+
+      when (text = @ss.scan(/\*FILE/))
+         action { [:IDENT, [lineno, text]] }
 
       when (text = @ss.scan(/\d+/))
          action { [:NUMBER, [lineno, text.to_i]] }
@@ -81,7 +99,7 @@ class ClLexer < Racc::Parser
       when (text = @ss.scan(/[&%]\w+/))
          action { [(RESERVED[text] || :IDENT), [lineno, text]] }
 
-      when (text = @ss.scan(/\w+/))
+      when (text = @ss.scan(/[\w|@]+/))
          action { [(RESERVED[text] || :IDENT), [lineno, text]] }
 
       when (text = @ss.scan(/\'[^']*\'/))
@@ -106,7 +124,7 @@ class ClLexer < Racc::Parser
       when (text = @ss.scan(/\*+[^\*\/\n]+/))
          action { return }
 
-      when (text = @ss.scan(/\*\//))
+      when (text = @ss.scan(/\*+\//))
          action { @state = nil; return }
 
       else

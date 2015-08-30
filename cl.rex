@@ -19,7 +19,7 @@ rule
                 \/\*           { @state = :COMMENT; return }
   :COMMENT      [^\*]+         { return }
   :COMMENT      \*+[^\*\/\n]+  { return }
-  :COMMENT      \*\/           { @state = nil; return }
+  :COMMENT      \*+\/          { @state = nil; return }
 
 # 継続行
   \+\s+
@@ -34,14 +34,20 @@ rule
 #  \/\*(.+)\*\/
 
 # 予約語
-  \*CHAR        { [:RESERVED, [lineno, text]] }
+  \*CHAR        { [:IDENT, [lineno, text]] }
+  \*LIBL        { [:IDENT, [lineno, text]] }
+  \*CHG         { [:IDENT, [lineno, text]] }
+  \*DEC         { [:IDENT, [lineno, text]] }
+  \*REPLACE     { [:IDENT, [lineno, text]] }
+  \*YES         { [:IDENT, [lineno, text]] }
+  \*FILE        { [:IDENT, [lineno, text]] }
 
 # 数値
   \d+           { [:NUMBER, [lineno, text.to_i]] }
 
 # 識別子
   [&%]\w+       { [(RESERVED[text] || :IDENT), [lineno, text]] }
-  \w+           { [(RESERVED[text] || :IDENT), [lineno, text]] }
+  [\w|@]+       { [(RESERVED[text] || :IDENT), [lineno, text]] }
 
 # 文字列
   \'[^']*\'     { [:STRING, [lineno, text]] }

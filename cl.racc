@@ -32,6 +32,7 @@ rule
                   val[1]
                 }
             | if_stmt
+            | label
 
   command   : IDENT parms
                 {
