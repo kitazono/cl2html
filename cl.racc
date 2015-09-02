@@ -31,8 +31,11 @@ rule
                 {
                   val[1]
                 }
-            | if_stmt
             | label
+                {
+                  CommandNode.new(@file_name, val[0][0], nil, nil)
+                }
+            | if_stmt
 
   command   : IDENT parms
                 {

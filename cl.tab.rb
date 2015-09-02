@@ -13,7 +13,7 @@ require './cl.rex.rb'
 
 class ClParser < Racc::Parser
 
-module_eval(<<'...end cl.racc/module_eval...', 'cl.racc', 125)
+module_eval(<<'...end cl.racc/module_eval...', 'cl.racc', 128)
 
   def parse(file, file_name)
     @file_name = file_name
@@ -73,7 +73,7 @@ racc_action_pointer = [
     86,    87,    88,   nil,   nil,   nil ]
 
 racc_action_default = [
-    -2,   -31,    -1,   -31,   -31,    -4,    -5,    -8,    -7,   -11,
+    -2,   -31,    -1,   -31,   -31,    -4,    -5,    -7,    -8,   -11,
    -31,    66,    -3,    -6,   -11,    -9,   -10,   -12,   -14,   -24,
    -31,   -19,   -31,   -25,   -26,   -27,   -29,   -30,   -31,   -15,
    -31,   -20,   -24,   -31,   -31,   -31,   -31,   -31,   -31,   -31,
@@ -113,7 +113,7 @@ racc_reduce_table = [
   2, 20, :_reduce_none,
   1, 21, :_reduce_none,
   2, 21, :_reduce_6,
-  1, 21, :_reduce_none,
+  1, 21, :_reduce_7,
   1, 21, :_reduce_none,
   2, 22, :_reduce_9,
   2, 22, :_reduce_10,
@@ -253,25 +253,30 @@ module_eval(<<'.,.,', 'cl.racc', 31)
   end
 .,.,
 
-# reduce 7 omitted
+module_eval(<<'.,.,', 'cl.racc', 35)
+  def _reduce_7(val, _values)
+                      CommandNode.new(@file_name, val[0][0], nil, nil)
+                
+  end
+.,.,
 
 # reduce 8 omitted
 
-module_eval(<<'.,.,', 'cl.racc', 38)
+module_eval(<<'.,.,', 'cl.racc', 41)
   def _reduce_9(val, _values)
                       CommandNode.new(@file_name, val[0][0], val[0][1], val[1])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 42)
+module_eval(<<'.,.,', 'cl.racc', 45)
   def _reduce_10(val, _values)
                       CommandNode.new(@file_name, val[0][0], val[0][1], val[1])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 46)
+module_eval(<<'.,.,', 'cl.racc', 49)
   def _reduce_11(val, _values)
                       CommandNode.new(@file_name, val[0][0], val[0][1], nil)
                 
@@ -280,28 +285,28 @@ module_eval(<<'.,.,', 'cl.racc', 46)
 
 # reduce 12 omitted
 
-module_eval(<<'.,.,', 'cl.racc', 53)
+module_eval(<<'.,.,', 'cl.racc', 56)
   def _reduce_13(val, _values)
                       IfNode.new(@file_name, val[0][0], val[3], val[7])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 58)
+module_eval(<<'.,.,', 'cl.racc', 61)
   def _reduce_14(val, _values)
                       [val[0]]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 62)
+module_eval(<<'.,.,', 'cl.racc', 65)
   def _reduce_15(val, _values)
                       val[0].push(val[1])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 67)
+module_eval(<<'.,.,', 'cl.racc', 70)
   def _reduce_16(val, _values)
                       ParmNode.new(@file_name, val[0][0], val[0][1], val[2])
                 
@@ -312,28 +317,28 @@ module_eval(<<'.,.,', 'cl.racc', 67)
 
 # reduce 18 omitted
 
-module_eval(<<'.,.,', 'cl.racc', 74)
+module_eval(<<'.,.,', 'cl.racc', 77)
   def _reduce_19(val, _values)
                       [val[0]]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 78)
+module_eval(<<'.,.,', 'cl.racc', 81)
   def _reduce_20(val, _values)
                       val[0].push(val[1])
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 83)
+module_eval(<<'.,.,', 'cl.racc', 86)
   def _reduce_21(val, _values)
                        [val[0][0], val[0][1] + '=' + val[2][1]]  
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 87)
+module_eval(<<'.,.,', 'cl.racc', 90)
   def _reduce_22(val, _values)
                        [val[0][0], val[0][1] + val[2][1]]                     
                 
@@ -342,35 +347,35 @@ module_eval(<<'.,.,', 'cl.racc', 87)
 
 # reduce 23 omitted
 
-module_eval(<<'.,.,', 'cl.racc', 94)
+module_eval(<<'.,.,', 'cl.racc', 97)
   def _reduce_24(val, _values)
                        val[0]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 98)
+module_eval(<<'.,.,', 'cl.racc', 101)
   def _reduce_25(val, _values)
                        val[0]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 102)
+module_eval(<<'.,.,', 'cl.racc', 105)
   def _reduce_26(val, _values)
                        val[0]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 106)
+module_eval(<<'.,.,', 'cl.racc', 109)
   def _reduce_27(val, _values)
                        val[0]
                 
   end
 .,.,
 
-module_eval(<<'.,.,', 'cl.racc', 110)
+module_eval(<<'.,.,', 'cl.racc', 113)
   def _reduce_28(val, _values)
                        val[0]
                 

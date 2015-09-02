@@ -12,7 +12,7 @@ class Node
 
   def exec_list(nodes)
     v = nil
-    nodes.each {|node| v = node.print}
+    nodes.each {|node| v = node.evaluate}
     v
   end
 
@@ -33,7 +33,7 @@ class RootNode < Node
     @tree = tree
   end
 
-  def print
+  def evaluate
     exec_list(@tree)
   end
 end
@@ -48,12 +48,12 @@ class CommandNode < Node
     @parms = parms
   end
 
-  def print
+  def evaluate
     if @command == "CALL"
       puts "#{@command} #{@parms[0].args[0][1]}"
       @file_name =~ /.*#{File::Separator}(.*)\.txt/
 
-      InterPreter.new("-p", @file_name.gsub($1, @parms[0].args[0][1]))
+      InterPreter.new(@file_name.gsub($1, @parms[0].args[0][1]))
     end
   end
 end
@@ -67,10 +67,10 @@ class IfNode < Node
     # @false_stmt = false_stmt
   end
 
-  def print
+  def evaluate
     if @true_stmt.command == "CALL"
       puts "IF #{@condition[1]} THEN"
-      @true_stmt.print
+      @true_stmt.evaluate
     end
   end
 end
