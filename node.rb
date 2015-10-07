@@ -50,10 +50,11 @@ class CommandNode < Node
 
   def evaluate
     if @command == "CALL"
-      puts "#{@command} #{@parms[0].args[0][1]}"
+      puts "#{@parms[0].args[0][1]}"
       @file_name =~ /.*#{File::Separator}(.*)\.txt/
-
       InterPreter.new(@file_name.gsub($1, @parms[0].args[0][1]))
+    elsif @command == "SBMJOB"
+      @parms[0].evaluate
     end
   end
 end
@@ -68,10 +69,7 @@ class IfNode < Node
   end
 
   def evaluate
-    if @true_stmt.command == "CALL"
-      puts "IF #{@condition[1]} THEN"
-      @true_stmt.evaluate
-    end
+    @true_stmt.evaluate
   end
 end
 

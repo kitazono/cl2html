@@ -71,7 +71,11 @@ rule
                   ParmNode.new(@file_name, val[0][0], val[0][1], val[2])
                 }
             | IDENT '(' primary '(' NUMBER NUMBER ')' ')' # 例.DTAARA(WRKLIB/AREA1 (1 7))
-            | CMD '(' IDENT IDENT  '(' IDENT ')' ')'      # 例.CMD(CALL PGM(PGM1A))
+            | CMD '(' command ')'      # 例.CMD(CALL PGM(PGM1A))
+                {
+                  val[2]
+                }
+#            | CMD '(' IDENT IDENT  '(' IDENT ')' ')'      # 例.CMD(CALL PGM(PGM1A))
 
   args      : primary
                 {
