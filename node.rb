@@ -1,3 +1,7 @@
+require "gviz"
+
+$gv = Gviz.new
+
 class IntpError < StandardError; end
 
 class Node
@@ -50,8 +54,9 @@ class CommandNode < Node
 
   def evaluate
     if @command == "CALL"
-      puts "#{@parms[0].args[0][1]}"
       @file_name =~ /.*#{File::Separator}(.*)\.txt/
+      puts "#{$1 + @parms[0].args[0][1]}"
+      $gv.add $1.to_sym => @parms[0].args[0][1].to_sym
       InterPreter.new(@file_name.gsub($1, @parms[0].args[0][1]))
     elsif @command == "SBMJOB"
       @parms[0].evaluate

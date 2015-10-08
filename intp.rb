@@ -1,3 +1,4 @@
+require "gviz"
 require './cl.tab.rb'
 require './node.rb'
 
@@ -17,3 +18,4 @@ class InterPreter
 end
 
 InterPreter.new(ARGV[0])
+$gv.save :sample, :png
