@@ -75,25 +75,7 @@ class ClLexer < Racc::Parser
       when (text = @ss.scan(/\w+:/))
         ;
 
-      when (text = @ss.scan(/\*CHAR/))
-         action { [:IDENT, [lineno, text]] }
-
-      when (text = @ss.scan(/\*LIBL/))
-         action { [:IDENT, [lineno, text]] }
-
-      when (text = @ss.scan(/\*CHG/))
-         action { [:IDENT, [lineno, text]] }
-
-      when (text = @ss.scan(/\*DEC/))
-         action { [:IDENT, [lineno, text]] }
-
-      when (text = @ss.scan(/\*REPLACE/))
-         action { [:IDENT, [lineno, text]] }
-
-      when (text = @ss.scan(/\*YES/))
-         action { [:IDENT, [lineno, text]] }
-
-      when (text = @ss.scan(/\*FILE/))
+      when (text = @ss.scan(/\*\w+/))
          action { [:IDENT, [lineno, text]] }
 
       when (text = @ss.scan(/\d+/))

@@ -34,13 +34,7 @@ rule
   \w+:
 
 # 予約語
-  \*CHAR        { [:IDENT, [lineno, text]] }
-  \*LIBL        { [:IDENT, [lineno, text]] }
-  \*CHG         { [:IDENT, [lineno, text]] }
-  \*DEC         { [:IDENT, [lineno, text]] }
-  \*REPLACE     { [:IDENT, [lineno, text]] }
-  \*YES         { [:IDENT, [lineno, text]] }
-  \*FILE        { [:IDENT, [lineno, text]] }
+  \*\w+        { [:IDENT, [lineno, text]] }
 
 # 数値
   \d+           { [:NUMBER, [lineno, text.to_i]] }

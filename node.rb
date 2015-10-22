@@ -55,36 +55,24 @@ class CommandNode < Node
   def evaluate
     if @command == "CALL"
       @file_name =~ /.*#{File::Separator}(.*)\.txt/
-      puts "#{$1 + @parms[0].args[0][1]}"
-      $gv.add $1.to_sym => @parms[0].args[0][1].to_sym
-      InterPreter.new(@file_name.gsub($1, @parms[0].args[0][1]))
+      puts "#{$1 + @parms[1]}"
+      $gv.add $1.to_sym => @parms[1].to_sym
+      InterPreter.new(@file_name.gsub($1, @parms[1]))
     elsif @command == "SBMJOB"
-      @parms[0].evaluate
+      @parms.evaluate
     end
   end
 end
 
 class IfNode < Node
 
-  def initialize(file_name, lineno, condition, true_stmt)
+  def initialize(file_name, lineno, true_stmt)
     super(file_name, lineno)
-    @condition = condition
     @true_stmt = true_stmt
     # @false_stmt = false_stmt
   end
 
   def evaluate
     @true_stmt.evaluate
-  end
-end
-
-class ParmNode < Node
-
-  attr_reader :args
-
-  def initialize(file_name, lineno, parm_name, args)
-    super(file_name, lineno)
-    @parm_name = parm_name
-    @args = args
   end
 end

@@ -26,8 +26,13 @@ rule
                 }
             | stmt_list EOL
 
-  stmt      : command
-            | if_stmt
+  stmt      : if_stmt
+            | command
+
+  if_stmt   : IF COND '(' expr ')' THEN '(' command ')'
+                {
+                  IfNode.new(@file_name, val[0][0], val[7])
+                }
 
   command   : IDENT parms
                 {
@@ -42,71 +47,32 @@ rule
                   CommandNode.new(@file_name, val[0][0], val[0][1], nil)
                 }
 
-  if_stmt   : IF COND '(' expr ')' THEN '(' command ')'
-                {
-                  IfNode.new(@file_name, val[0][0], val[3], val[7])
-                }
-
   parms     : parm
-                {
-                  [val[0]]
-                }
             | parms parm
-                {
-                  val[0].push(val[1])
-                }
 
   parm      : IDENT '(' args ')'
                 {
-                  ParmNode.new(@file_name, val[0][0], val[0][1], val[2])
+                  val[2]
                 }
-            | IDENT '(' primary '(' NUMBER NUMBER ')' ')' # 例.DTAARA(WRKLIB/AREA1 (1 7))
-            | CMD '(' command ')'      # 例.CMD(CALL PGM(PGM1A))
+            | CMD '(' command ')'                             # 例.CMD(CALL PGM(PGM1A))
                 {
                   val[2]
                 }
-#            | CMD '(' IDENT IDENT  '(' IDENT ')' ')'      # 例.CMD(CALL PGM(PGM1A))
+            | IDENT '(' primary '(' NUMBER NUMBER ')' ')'     # 例.DTAARA(WRKLIB/AREA1 (1 7))
 
   args      : primary
-                {
-                  [val[0]]
-                }
             | args primary
-                {
-                  val[0].push(val[1])
-                }
  
   expr      : primary '=' primary
-                {
-                   [val[0][0], val[0][1] + '=' + val[2][1]]  
-                }
             | primary '||' primary
-                {
-                   [val[0][0], val[0][1] + val[2][1]]                     
-                }
 
   function  : SST '(' args ')'
 
   primary   : IDENT
-                {
-                   val[0]
-                }
             | NUMBER
-                {
-                   val[0]
-                }
             | STRING
-                {
-                   val[0]
-                }
             | RESERVED
-                {
-                   val[0]
-                }
             | IDENT '/' IDENT
-                {
-                   val[0]
-                }
             | function
             | expr  
 
