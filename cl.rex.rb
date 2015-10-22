@@ -6,7 +6,7 @@
 
 require 'racc/parser'
 # rex  cl.rex --stub
-# ruby cl.rex.rb  ../test_data/CL_SAMPLE.txt
+# ruby cl.rex.rb  ../test_data/CLSAMPLE.txt
 
 class ClLexer < Racc::Parser
   require 'strscan'
@@ -70,6 +70,9 @@ class ClLexer < Racc::Parser
          action { [:EOL, [lineno, nil]] }
 
       when (text = @ss.scan(/\s+?/))
+        ;
+
+      when (text = @ss.scan(/\w+:/))
         ;
 
       when (text = @ss.scan(/\*CHAR/))

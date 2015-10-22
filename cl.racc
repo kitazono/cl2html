@@ -18,7 +18,7 @@ rule
 
   stmt_list :
                 {
-                  result = []
+                  []
                 }
             | stmt_list stmt EOL
                 {
@@ -27,14 +27,6 @@ rule
             | stmt_list EOL
 
   stmt      : command
-            | label command
-                {
-                  val[1]
-                }
-            | label
-                {
-                  CommandNode.new(@file_name, val[0][0], nil, nil)
-                }
             | if_stmt
 
   command   : IDENT parms
@@ -49,8 +41,6 @@ rule
                 {
                   CommandNode.new(@file_name, val[0][0], val[0][1], nil)
                 }
-
-  label     : IDENT ':'
 
   if_stmt   : IF COND '(' expr ')' THEN '(' command ')'
                 {

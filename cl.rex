@@ -1,5 +1,5 @@
 # rex  cl.rex --stub
-# ruby cl.rex.rb  ../test_data/CL_SAMPLE.txt
+# ruby cl.rex.rb  ../test_data/CLSAMPLE.txt
 
 class ClLexer
 
@@ -30,8 +30,8 @@ rule
 # 空白
   \s+?
 
-# コメント
-#  \/\*(.+)\*\/
+# ラベル
+  \w+:
 
 # 予約語
   \*CHAR        { [:IDENT, [lineno, text]] }
