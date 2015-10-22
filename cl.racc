@@ -73,6 +73,9 @@ rule
             | STRING
             | RESERVED
             | IDENT '/' IDENT
+                {
+                  val[2]
+                }
             | function
             | expr  
 

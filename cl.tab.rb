@@ -13,7 +13,7 @@ require './cl.rex.rb'
 
 class ClParser < Racc::Parser
 
-module_eval(<<'...end cl.racc/module_eval...', 'cl.racc', 88)
+module_eval(<<'...end cl.racc/module_eval...', 'cl.racc', 91)
 
   def parse(file, file_name)
     @file_name = file_name
@@ -127,7 +127,7 @@ racc_reduce_table = [
   1, 27, :_reduce_none,
   1, 27, :_reduce_none,
   1, 27, :_reduce_none,
-  3, 27, :_reduce_none,
+  3, 27, :_reduce_25,
   1, 27, :_reduce_none,
   1, 27, :_reduce_none ]
 
@@ -304,7 +304,12 @@ module_eval(<<'.,.,', 'cl.racc', 58)
 
 # reduce 24 omitted
 
-# reduce 25 omitted
+module_eval(<<'.,.,', 'cl.racc', 76)
+  def _reduce_25(val, _values)
+                      val[2]
+                
+  end
+.,.,
 
 # reduce 26 omitted
 
