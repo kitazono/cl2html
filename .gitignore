@@ -1,3 +1,5 @@
 cl.output
 .DS_Store
 *.txt
+*.dot
+*.png
