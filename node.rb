@@ -55,9 +55,9 @@ class CommandNode < Node
   def evaluate
     if @command == "CALL"
       @file_name =~ /.*#{File::Separator}(.*)\.txt/
-      puts "#{$1 + @parms[1]}"
+      puts "#{$1} -> #{@parms[1]}"
       $gv.add $1.to_sym => @parms[1].to_sym
-      InterPreter.new(@file_name.gsub($1, @parms[1]))
+      # InterPreter.new(@file_name.gsub($1, @parms[1]))
     elsif @command == "SBMJOB"
       @parms.evaluate
     end
