@@ -15,7 +15,7 @@ rule
                 CALL           { @state = :CALL; return }
   :CALL         \s+?           { return }
   :CALL         PGM\(          { return }
-  :CALL         \w+            { [lineno, text] }
+  :CALL         \w+            { [:PGM, [lineno, text]] }
   :CALL         \)             { @state = nil; return }
 
 # 改行、スペース

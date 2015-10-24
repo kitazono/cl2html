@@ -102,7 +102,7 @@ class ClLexer < Racc::Parser
          action { return }
 
       when (text = @ss.scan(/\w+/))
-         action { [lineno, text] }
+         action { [:PGM, [lineno, text]] }
 
       when (text = @ss.scan(/\)/))
          action { @state = nil; return }
@@ -119,17 +119,3 @@ class ClLexer < Racc::Parser
   end  # def _next_token
 
 end # class
-
-if __FILE__ == $0
-  exit  if ARGV.size != 1
-  filename = ARGV.shift
-  rex = ClLexer.new
-  begin
-    rex.load_file  filename
-    while  token = rex.next_token
-      p token
-    end
-  rescue
-    $stderr.printf  "%s:%d:%s\n", rex.filename, rex.lineno, $!.message
-  end
-end

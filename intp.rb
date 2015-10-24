@@ -1,6 +1,7 @@
 require "gviz"
 require './cl.tab.rb'
-require './node.rb'
+
+$gv = Gviz.new
 
 class InterPreter
 
@@ -9,7 +10,6 @@ class InterPreter
     begin
       tree = nil
       File.open(@file_name) {|file| tree = ClParser.new.parse(file, @file_name)}
-      tree.evaluate
     rescue Racc::ParseError, IntpError, Errno::ENOENT
       $stderr.puts "#{$0}: #{$!}"
       exit 1
