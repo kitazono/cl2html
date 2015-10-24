@@ -63,38 +63,14 @@ class ClLexer < Racc::Parser
       when (text = @ss.scan(/\/\*/))
          action { @state = :COMMENT; return }
 
-      when (text = @ss.scan(/\+\s+/))
-        ;
-
-      when (text = @ss.scan(/\n/))
-         action { [:EOL, [lineno, nil]] }
+      when (text = @ss.scan(/CALL/))
+         action { @state = :CALL; return }
 
       when (text = @ss.scan(/\s+?/))
         ;
 
-      when (text = @ss.scan(/\w+:/))
-        ;
-
-      when (text = @ss.scan(/\*\w+/))
-         action { [:IDENT, [lineno, text]] }
-
-      when (text = @ss.scan(/\d+/))
-         action { [:NUMBER, [lineno, text.to_i]] }
-
-      when (text = @ss.scan(/[&%]\w+/))
-         action { [(RESERVED[text] || :IDENT), [lineno, text]] }
-
-      when (text = @ss.scan(/[\w|@]+/))
-         action { [(RESERVED[text] || :IDENT), [lineno, text]] }
-
-      when (text = @ss.scan(/\'[^']*\'/))
-         action { [:STRING, [lineno, text]] }
-
-      when (text = @ss.scan(/\|\|/))
-         action { [text, [lineno, text]] }
-
       when (text = @ss.scan(/./))
-         action { [text, [lineno, text]] }
+        ;
 
       else
         text = @ss.string[@ss.pos .. -1]
@@ -117,17 +93,43 @@ class ClLexer < Racc::Parser
         raise  ScanError, "can not match: '" + text + "'"
       end  # if
 
+    when :CALL
+      case
+      when (text = @ss.scan(/\s+?/))
+         action { return }
+
+      when (text = @ss.scan(/PGM\(/))
+         action { return }
+
+      when (text = @ss.scan(/\w+/))
+         action { [lineno, text] }
+
+      when (text = @ss.scan(/\)/))
+         action { @state = nil; return }
+
+      else
+        text = @ss.string[@ss.pos .. -1]
+        raise  ScanError, "can not match: '" + text + "'"
+      end  # if
+
     else
       raise  ScanError, "undefined state: '" + state.to_s + "'"
     end  # case state
     token
   end  # def _next_token
 
-  RESERVED = {
-    'IF'     => :IF,
-    'THEN'   => :THEN,
-    'CMD'    => :CMD,
-    'COND'   => :COND,
-    '%SST'   => :SST
-  }
 end # class
+
+if __FILE__ == $0
+  exit  if ARGV.size != 1
+  filename = ARGV.shift
+  rex = ClLexer.new
+  begin
+    rex.load_file  filename
+    while  token = rex.next_token
+      p token
+    end
+  rescue
+    $stderr.printf  "%s:%d:%s\n", rex.filename, rex.lineno, $!.message
+  end
+end
